@@ -1,0 +1,433 @@
+<title>Loaded Dice Prototype</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IM+Fell+English+SC&family=Alegreya+Sans:wght@400;500;700;800&display=swap">
+<style>
+/* Layout: one phone-height tavern table — status rail on top, dice on the table, your kit along the bottom edge. Single dark look by choice (candlelit table). */
+:root {
+  --wood: #22170f;       /* table */
+  --wood-hi: #33231a;    /* raised wood */
+  --parch: #eadcbc;      /* parchment text and cards */
+  --parch-dim: #b8a684;  /* secondary text */
+  --candle: #e3a447;     /* accent: candlelight */
+  --blood: #c0453a;      /* HP and damage */
+  --moss: #7fa463;       /* success */
+  --ink: #1a120c;        /* text on parchment */
+  --d-red: #b8473c; --d-blue: #3f6fb0; --d-green: #4f8a4a; --d-gold: #c99a2e;
+  --f-display: "IM Fell English SC", "Iowan Old Style", Georgia, serif;
+  --f-body: "Alegreya Sans", "Segoe UI", system-ui, sans-serif;
+  color-scheme: dark;
+}
+html, body { height: 100%; }
+body {
+  background: radial-gradient(120% 80% at 50% 35%, #3a281c 0%, var(--wood) 60%, #150e09 100%) fixed, var(--wood);
+  color: var(--parch); font: 16px/1.4 var(--f-body);
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+.app { max-width: 560px; margin: 0 auto; min-height: 100%; display: flex; flex-direction: column; gap: 14px; padding-block: 14px 18px; }
+h1, h2, h3 { font-family: var(--f-display); font-weight: 400; text-wrap: balance; margin: 0; letter-spacing: .02em; }
+button { font: inherit; color: inherit; cursor: pointer; }
+button:focus-visible, .die:focus-visible { outline: 2px solid var(--candle); outline-offset: 3px; }
+.muted { color: var(--parch-dim); }
+.label { font-size: 12px; letter-spacing: .12em; text-transform: uppercase; color: var(--parch-dim); font-weight: 700; }
+
+/* status rail */
+.rail { display: grid; grid-template-columns: 1fr auto; gap: 6px 12px; align-items: center; }
+.where { font-family: var(--f-display); font-size: 20px; }
+.boss-tag { color: var(--blood); }
+.hp { grid-column: 1 / -1; display: flex; align-items: center; gap: 10px; }
+.hpbar { flex: 1; height: 12px; border-radius: 6px; background: #120b07; box-shadow: inset 0 0 0 1px #4a3426; overflow: hidden; }
+.hpfill { height: 100%; background: linear-gradient(90deg, #8f2a22, var(--blood)); transition: width .4s ease; }
+.hpnum { font-weight: 800; font-variant-numeric: tabular-nums; min-width: 4.5ch; text-align: right; }
+.odds-toggle { background: none; border: 1px solid #4a3426; border-radius: 999px; padding: 4px 10px; font-size: 13px; color: var(--parch-dim); }
+.odds-toggle[aria-pressed="true"] { color: var(--candle); border-color: var(--candle); }
+
+/* the table */
+.table { flex: 1; display: flex; flex-direction: column; justify-content: center; gap: 14px; min-height: 300px; }
+.prompt { text-align: center; font-size: 17px; min-height: 2.8em; }
+.prompt b { color: var(--candle); }
+.dice { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; }
+.die { background: none; border: 0; padding: 6px 4px 8px; border-radius: 14px; width: 96px; display: flex; flex-direction: column; align-items: center; gap: 4px; transition: transform .15s ease, background .15s; }
+.die svg { width: 76px; height: 76px; overflow: visible; filter: drop-shadow(0 6px 6px rgba(0,0,0,.5)); }
+.die .shape { stroke: rgba(0,0,0,.45); stroke-width: 2.5; }
+.die .face { font-family: var(--f-body); font-weight: 800; fill: #fff8e8; paint-order: stroke; stroke: rgba(0,0,0,.35); stroke-width: 3px; }
+.die .tag { font-weight: 700; font-size: 14px; }
+.die .range { font-size: 12px; color: var(--parch-dim); font-variant-numeric: tabular-nums; min-height: 1.4em; text-align: center; }
+.die.pickable:hover { transform: translateY(-3px); }
+.die.chosen { background: rgba(227,164,71,.14); box-shadow: 0 0 0 2px var(--candle); }
+.die.chosen .tag { color: var(--candle); }
+.die.won .tag::after { content: " ✓"; color: var(--moss); }
+.die.target { box-shadow: 0 0 0 2px dashed var(--parch-dim); outline: 1px dashed var(--parch-dim); }
+.die.rolling svg { animation: wobble .12s linear infinite; }
+@keyframes wobble { 0% { transform: rotate(-6deg); } 50% { transform: rotate(6deg); } 100% { transform: rotate(-6deg); } }
+@media (prefers-reduced-motion: reduce) { .die.rolling svg { animation: none; } .hpfill { transition: none; } }
+.breakdown { text-align: center; font-size: 14px; color: var(--parch-dim); font-variant-numeric: tabular-nums; min-height: 1.4em; }
+.verdict { text-align: center; font-family: var(--f-display); font-size: 26px; min-height: 1.3em; }
+.verdict.good { color: var(--moss); } .verdict.bad { color: var(--blood); }
+
+/* actions */
+.actions { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
+.btn { border: 0; border-radius: 12px; padding: 13px 22px; font-weight: 800; font-size: 16px; background: var(--candle); color: var(--ink); min-width: 140px; box-shadow: 0 3px 0 #9c6a22; }
+.btn:active { transform: translateY(2px); box-shadow: 0 1px 0 #9c6a22; }
+.btn[disabled] { opacity: .4; cursor: default; }
+.btn.ghost { background: transparent; color: var(--parch); box-shadow: inset 0 0 0 1px #5a4130; }
+.feel { display: flex; gap: 8px; justify-content: center; align-items: center; flex-wrap: wrap; font-size: 14px; }
+.feel button { background: transparent; border: 1px solid #5a4130; border-radius: 999px; padding: 6px 12px; font-size: 14px; color: var(--parch-dim); }
+.feel button[aria-pressed="true"] { border-color: var(--candle); color: var(--candle); }
+
+/* kit along the bottom */
+.kit { display: grid; gap: 10px; border-top: 1px solid #3f2c20; padding-top: 12px; }
+.row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.chip { background: var(--wood-hi); border: 1px solid #4a3426; border-radius: 10px; padding: 6px 10px; font-size: 14px; text-align: left; }
+.chip small { display: block; color: var(--parch-dim); font-size: 12px; }
+.chip.use { border-color: var(--candle); }
+.chip.use[disabled] { opacity: .45; border-color: #4a3426; cursor: default; }
+.chip.armed { background: rgba(227,164,71,.2); }
+.empty { font-size: 14px; color: var(--parch-dim); }
+
+/* overlays: start, reward, end */
+.sheet { display: flex; flex-direction: column; gap: 16px; padding-block: 8px; }
+.sheet h1 { font-size: 40px; line-height: 1.05; }
+.sheet h2 { font-size: 28px; }
+.sheet p { margin: 0; max-width: 62ch; }
+.rules { display: grid; gap: 8px; margin: 0; padding-left: 1.2em; }
+.cards { display: grid; gap: 10px; }
+.card { background: var(--parch); color: var(--ink); border: 0; border-radius: 12px; padding: 14px 16px; text-align: left; display: grid; gap: 2px; box-shadow: 0 4px 0 #9b8a66; }
+.card:hover { transform: translateY(-2px); }
+.card .kind { font-size: 11px; letter-spacing: .14em; text-transform: uppercase; font-weight: 800; color: #7a5a2a; }
+.card .name { font-family: var(--f-display); font-size: 22px; }
+.card .desc { font-size: 15px; }
+.stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px; }
+.stat { background: var(--wood-hi); border-radius: 12px; padding: 10px 12px; }
+.stat b { display: block; font-size: 26px; font-variant-numeric: tabular-nums; color: var(--candle); }
+.note { font-size: 13px; color: var(--parch-dim); }
+</style>
+
+<div class="app" id="app"></div>
+
+<script>
+(() => {
+'use strict';
+// ---------- tuning (all numbers in one place) ----------
+const T = {
+  startHP: 30, healAmount: 8, bossHeal: 10,
+  floors: 3, roundsPerFloor: 5,              // round 5 of each floor is the boss
+  rewardAfterRounds: [2, 4],                 // pick a reward after these rounds, and after each boss
+  bossDamageMult: 2,
+  sizes: [4, 6, 8, 10, 12, 20],
+  colours: [['red', 3], ['blue', 3], ['green', 3], ['gold', 1]], // [colour, weight]
+  maxConsumables: 3,
+};
+const COLOUR_VAR = { red: 'var(--d-red)', blue: 'var(--d-blue)', green: 'var(--d-green)', gold: 'var(--d-gold)' };
+
+// ---------- upgrades: only boost the die YOU pick ----------
+// Order: roll faces -> flat adds (per die) -> multipliers.
+const UPGRADES = {
+  whetstone: { name: 'Whetstone', desc: '+1 to each die you pick.', add: (d) => 1 },
+  blueink:   { name: 'Blue Ink', desc: '+1 to blue dice.', add: (d) => d.colour === 'blue' ? 1 : 0 },
+  ember:     { name: 'Ember', desc: '+2 to red dice.', add: (d) => d.colour === 'red' ? 2 : 0 },
+  underdog:  { name: 'Underdog', desc: '+3 if your die is the smallest size on the table.', add: (d, ctx) => d.size === ctx.smallest ? 3 : 0 },
+  littlegiant: { name: 'Little Giant', desc: 'A d4 you pick splits into three d4s. Adds apply to each one.', split: (d) => d.size === 4 ? 3 : 1 },
+  tripler:   { name: 'Tripler', desc: 'Triple the total of a d4 you pick (after adds).', mult: (d) => d.size === 4 ? 3 : 1 },
+  gilded:    { name: 'Gilded', desc: 'Double the total of a gold die you pick.', mult: (d) => d.colour === 'gold' ? 2 : 1 },
+  luckysix:  { name: 'Lucky Six', desc: 'A d6 you pick rolls with advantage (roll twice, keep higher).', adv: (d) => d.size === 6 },
+  greenthumb:{ name: 'Green Thumb', desc: 'Green dice you pick reroll any 1s.', reroll1: (d) => d.colour === 'green' },
+  evenkeel:  { name: 'Even Keel', desc: 'A d8 or d10 you pick never rolls below half its size.', floorHalf: (d) => d.size === 8 || d.size === 10 },
+};
+const CONSUMABLES = {
+  reroll: { name: 'Reroll', desc: 'After the roll, reroll your die.', when: 'result' },
+  heal:   { name: 'Healing Draught', desc: `Restore ${T.healAmount} HP.`, when: 'pick' },
+  shrink: { name: 'Chisel', desc: 'Lower any die one size (d8 → d6).', when: 'pick', target: true },
+  grow:   { name: 'Mallet', desc: 'Raise any die one size (d6 → d8).', when: 'pick', target: true },
+};
+
+// ---------- state ----------
+let S;
+const app = document.getElementById('app');
+const rnd = (n) => 1 + Math.floor(Math.random() * n);
+const pickWeighted = (pairs) => { const tot = pairs.reduce((a, p) => a + p[1], 0); let r = Math.random() * tot; for (const [v, w] of pairs) { if ((r -= w) < 0) return v; } return pairs[0][0]; };
+const shuffle = (a) => { for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+
+function newRun() {
+  S = {
+    screen: 'table', hp: T.startHP, floor: 1, round: 1, endless: false,
+    upgrades: [], consumables: ['reroll', 'heal'],
+    dice: [], chosen: null, phase: 'pick', armed: null,
+    results: null, verdict: null, feel: null,
+    showOdds: S ? S.showOdds : false,
+    stats: { rounds: 0, wins: 0, ties: 0, losses: 0, dmg: 0, real: 0, obvious: 0, biggest: 0 },
+    firstReward: true,
+  };
+  dealTable();
+  render();
+}
+
+function isBoss() { return S.round === T.roundsPerFloor; }
+function diceCount() { return Math.min(1 + S.floor, 5) + (isBoss() ? 1 : 0); }
+
+function dealTable() {
+  const n = diceCount();
+  let dice;
+  do {
+    dice = Array.from({ length: n }, () => ({ size: T.sizes[Math.floor(Math.random() * T.sizes.length)], colour: pickWeighted(T.colours) }));
+  } while (new Set(dice.map(d => d.size)).size < Math.min(2, n));
+  S.dice = dice; S.chosen = null; S.phase = 'pick'; S.results = null; S.verdict = null; S.feel = null; S.armed = null;
+}
+
+// ---------- rolling ----------
+function ctx() { return { smallest: Math.min(...S.dice.map(d => d.size)) }; }
+function ups(key) { return S.upgrades.filter(u => UPGRADES[u][key]).map(u => UPGRADES[u]); }
+
+function rollFace(d) {
+  let r = rnd(d.size);
+  if (ups('adv').some(u => u.adv(d))) r = Math.max(r, rnd(d.size));
+  if (r === 1 && ups('reroll1').some(u => u.reroll1(d))) r = rnd(d.size);
+  if (ups('floorHalf').some(u => u.floorHalf(d))) r = Math.max(r, d.size / 2);
+  return r;
+}
+function rollChosen(d, c) {
+  const count = ups('split').reduce((n, u) => Math.max(n, u.split(d)), 1);
+  const faces = Array.from({ length: count }, () => rollFace(d));
+  const addEach = ups('add').reduce((a, u) => a + u.add(d, c), 0);
+  const mult = ups('mult').reduce((m, u) => m * u.mult(d), 1);
+  const base = faces.reduce((a, b) => a + b, 0);
+  const total = (base + addEach * count) * mult;
+  let text = faces.length > 1 ? `rolled ${faces.join(' + ')}` : `rolled ${faces[0]}`;
+  if (addEach) text += ` ${count > 1 ? `+ ${addEach}×${count}` : `+ ${addEach}`}`;
+  if (mult > 1) text += ` then ×${mult}`;
+  if (addEach || mult > 1 || count > 1) text += ` = ${total}`;
+  return { total, text };
+}
+function rangeOf(d) {
+  const c = ctx(); let lo = Infinity, hi = -Infinity, sum = 0; const N = 600;
+  for (let i = 0; i < N; i++) { const t = rollChosen(d, c).total; lo = Math.min(lo, t); hi = Math.max(hi, t); sum += t; }
+  return { lo, hi, avg: sum / N };
+}
+function winChance(idx) {
+  const c = ctx(); let w = 0, N = 1500;
+  for (let i = 0; i < N; i++) {
+    const mine = rollChosen(S.dice[idx], c).total;
+    let best = 0; S.dice.forEach((d, j) => { if (j !== idx) best = Math.max(best, rnd(d.size)); });
+    if (mine >= best) w++;
+  }
+  return Math.round(100 * w / N);
+}
+
+// ---------- actions ----------
+function choose(i) {
+  if (S.phase !== 'pick') return;
+  if (S.armed) { applyTargeted(i); return; }
+  S.chosen = S.chosen === i ? null : i; render();
+}
+function applyTargeted(i) {
+  const d = S.dice[i]; const k = T.sizes.indexOf(d.size);
+  if (S.armed === 'shrink' && k > 0) d.size = T.sizes[k - 1];
+  else if (S.armed === 'grow' && k < T.sizes.length - 1) d.size = T.sizes[k + 1];
+  else { S.armed = null; render(); return; }
+  removeConsumable(S.armed); S.armed = null; render();
+}
+function removeConsumable(key) { const i = S.consumables.indexOf(key); if (i >= 0) S.consumables.splice(i, 1); }
+function useConsumable(key) {
+  const c = CONSUMABLES[key];
+  if (c.when !== S.phase) return;
+  if (key === 'heal') { S.hp = Math.min(T.startHP, S.hp + T.healAmount); removeConsumable(key); render(); return; }
+  if (c.target) { S.armed = S.armed === key ? null : key; render(); return; }
+  if (key === 'reroll' && S.phase === 'result') {
+    const r = rollChosen(S.dice[S.chosen], ctx());
+    S.results[S.chosen] = r; removeConsumable(key); judge(); render();
+  }
+}
+
+function roll() {
+  if (S.chosen === null || S.phase !== 'pick') return;
+  S.phase = 'rolling'; render();
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const els = [...app.querySelectorAll('.die .face')];
+  let t = 0; const spin = reduce ? null : setInterval(() => { els.forEach((el, j) => el.textContent = rnd(S.dice[j].size)); }, 60);
+  setTimeout(() => {
+    if (spin) clearInterval(spin);
+    const c = ctx();
+    S.results = S.dice.map((d, j) => j === S.chosen ? rollChosen(d, c) : { total: rnd(d.size), text: '' });
+    S.phase = 'result'; judge(); render();
+  }, reduce ? 0 : 700);
+}
+function judge() {
+  const mine = S.results[S.chosen].total;
+  const best = Math.max(...S.results.filter((_, j) => j !== S.chosen).map(r => r.total));
+  if (mine > best) S.verdict = { kind: 'win', text: 'Your die holds.' };
+  else if (mine === best) S.verdict = { kind: 'tie', text: 'A tie. No blood drawn.' };
+  else { const dmg = (best - mine) * (isBoss() ? T.bossDamageMult : 1); S.verdict = { kind: 'loss', dmg, text: `Short by ${best - mine}. You take ${dmg}${isBoss() ? ' (boss ×2)' : ''}.` }; }
+}
+function next() {
+  const v = S.verdict; S.stats.rounds++;
+  if (S.feel === 'real') S.stats.real++; if (S.feel === 'obvious') S.stats.obvious++;
+  if (v.kind === 'win') S.stats.wins++; else if (v.kind === 'tie') S.stats.ties++;
+  else { S.stats.losses++; S.hp -= v.dmg; S.stats.dmg += v.dmg; S.stats.biggest = Math.max(S.stats.biggest, v.dmg); }
+  S.stats.best = Math.max(S.stats.best || 0, S.results[S.chosen].total);
+  if (S.hp <= 0) { S.hp = 0; S.screen = 'end'; S.won = false; render(); return; }
+  const wasBoss = isBoss();
+  const reward = wasBoss || T.rewardAfterRounds.includes(S.round);
+  if (wasBoss) {
+    S.hp = Math.min(T.startHP, S.hp + T.bossHeal);
+    if (S.floor === T.floors && !S.endless) { S.screen = 'end'; S.won = true; render(); return; }
+    S.floor++; S.round = 1;
+  } else S.round++;
+  dealTable();
+  if (reward) { S.offer = makeOffer(); S.screen = 'reward'; }
+  render();
+}
+function makeOffer() {
+  if (S.firstReward) { S.firstReward = false; return [['up', 'littlegiant'], ['up', 'tripler'], ['up', 'blueink']]; }
+  const pool = [...Object.keys(UPGRADES).map(k => ['up', k]), ...Object.keys(CONSUMABLES).map(k => ['use', k])];
+  return shuffle(pool).slice(0, 3);
+}
+function take(o) {
+  if (o[0] === 'up') S.upgrades.push(o[1]);
+  else if (S.consumables.length < T.maxConsumables) S.consumables.push(o[1]);
+  S.screen = 'table'; render();
+}
+
+// ---------- drawing ----------
+const SHAPES = {
+  4: '38,4 74,70 2,70', 6: '6,6 70,6 70,70 6,70', 8: '38,2 74,38 38,74 2,38',
+  10: '38,2 72,30 38,74 4,30', 12: '38,2 74,28 60,72 16,72 2,28', 20: '38,2 72,20 72,56 38,74 4,56 4,20',
+};
+function dieSVG(d, face) {
+  const fs = face >= 100 ? 22 : face >= 10 ? 26 : 30;
+  return `<svg viewBox="0 0 76 76" aria-hidden="true"><polygon class="shape" points="${SHAPES[d.size]}" fill="${COLOUR_VAR[d.colour]}"/>` +
+    `<text class="face" x="38" y="${d.size === 4 ? 56 : 46}" font-size="${fs}" text-anchor="middle">${face}</text></svg>`;
+}
+const esc = (s) => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+
+function render() {
+  if (S.screen === 'start') return renderStart();
+  if (S.screen === 'reward') return renderReward();
+  if (S.screen === 'end') return renderEnd();
+  const boss = isBoss();
+  const where = S.endless ? `Endless · Table ${S.floor}` : `Floor ${S.floor} of ${T.floors}`;
+  let prompt;
+  if (S.phase === 'pick') prompt = S.armed ? `Tap a die to <b>${S.armed === 'shrink' ? 'lower' : 'raise'}</b> its size.` : S.chosen === null ? 'Pick the die you think will roll highest.' : `You pick the <b>${S.dice[S.chosen].colour} d${S.dice[S.chosen].size}</b>. Roll when ready.`;
+  else if (S.phase === 'rolling') prompt = 'Rolling…';
+  else prompt = '';
+
+  const diceHTML = S.dice.map((d, i) => {
+    const face = S.results ? S.results[i].total : `d${d.size}`;
+    let range = '';
+    if (S.phase === 'pick') {
+      if (S.chosen === i || S.upgrades.length) { const r = rangeOf(d); range = r.lo === r.hi ? `${r.lo}` : `${r.lo}–${r.hi}, avg ${r.avg.toFixed(1)}`; }
+      else range = `1–${d.size}`;
+      if (S.showOdds) range += ` · ${winChance(i)}%`;
+    } else if (S.results && i === S.chosen) range = 'yours';
+    const cls = ['die', S.phase === 'pick' ? 'pickable' : '', S.chosen === i ? 'chosen' : '', S.phase === 'rolling' ? 'rolling' : '', S.armed ? 'target' : '',
+      S.verdict && i === S.chosen && S.verdict.kind !== 'loss' ? 'won' : ''].join(' ');
+    return `<button class="${cls}" data-die="${i}" aria-pressed="${S.chosen === i}" aria-label="${d.colour} d${d.size}" ${S.phase !== 'pick' ? 'tabindex="-1"' : ''}>
+      ${dieSVG(d, S.results ? face : (S.phase === 'rolling' ? '?' : d.size))}
+      <span class="tag">${d.colour} d${d.size}</span><span class="range">${range}</span></button>`;
+  }).join('');
+
+  const breakdown = S.results ? `Your ${S.dice[S.chosen].colour} d${S.dice[S.chosen].size}: ${S.results[S.chosen].text || 'rolled ' + S.results[S.chosen].total}` : '';
+  const vClass = S.verdict ? (S.verdict.kind === 'loss' ? 'bad' : 'good') : '';
+  let actions = '';
+  if (S.phase === 'pick') actions = `<button class="btn" id="roll" ${S.chosen === null ? 'disabled' : ''}>Roll</button>`;
+  if (S.phase === 'result') actions = `<button class="btn" id="next">Continue</button>`;
+  const feel = S.phase === 'result' ? `<div class="feel"><span class="muted">Playtest note:</span>
+    <button data-feel="real" aria-pressed="${S.feel === 'real'}">Real choice</button>
+    <button data-feel="obvious" aria-pressed="${S.feel === 'obvious'}">Obvious pick</button></div>` : '';
+
+  const upHTML = S.upgrades.length ? S.upgrades.map(u => `<span class="chip">${UPGRADES[u].name}<small>${UPGRADES[u].desc}</small></span>`).join('') : '<span class="empty">None yet. You get to choose after rounds 2 and 4.</span>';
+  const useHTML = S.consumables.length ? S.consumables.map((k, i) => {
+    const c = CONSUMABLES[k]; const ok = c.when === S.phase && !(k === 'heal' && S.hp >= T.startHP);
+    return `<button class="chip use ${S.armed === k ? 'armed' : ''}" data-use="${k}" ${ok ? '' : 'disabled'}>${c.name}<small>${c.desc}</small></button>`;
+  }).join('') : '<span class="empty">Empty.</span>';
+
+  app.innerHTML = `
+  <header class="rail">
+    <div class="where">${where} · Round ${S.round}${boss ? ' · <span class="boss-tag">Boss</span>' : ''}</div>
+    <button class="odds-toggle" id="odds" aria-pressed="${S.showOdds}">Show odds</button>
+    <div class="hp"><span class="label">HP</span><div class="hpbar"><div class="hpfill" style="width:${100 * S.hp / T.startHP}%"></div></div><span class="hpnum">${S.hp}/${T.startHP}</span></div>
+  </header>
+  <main class="table">
+    <div class="prompt">${boss && S.phase === 'pick' && !S.armed && S.chosen === null ? 'Boss table: one extra die, and a loss hurts double. ' : ''}${prompt}</div>
+    <div class="dice">${diceHTML}</div>
+    <div class="breakdown">${esc(breakdown)}</div>
+    <div class="verdict ${vClass}">${S.verdict ? esc(S.verdict.text) : ''}</div>
+    <div class="actions">${actions}</div>
+    ${feel}
+  </main>
+  <footer class="kit">
+    <div class="label">Your build</div><div class="row">${upHTML}</div>
+    <div class="label">Pouch (one use each)</div><div class="row">${useHTML}</div>
+  </footer>`;
+}
+
+function renderStart() {
+  app.innerHTML = `<section class="sheet">
+    <div class="label">Throwaway prototype · rules test</div>
+    <h1>Loaded Dice</h1>
+    <p>Each round, dice land on the tavern table. You pick one. All of them roll, and your upgrades boost <em>only the die you picked</em>.</p>
+    <ul class="rules">
+      <li>Highest roll wins and you move on. A tie costs nothing.</li>
+      <li>Lose, and you take damage equal to the gap. Bosses hit double.</li>
+      <li>Three floors of five rounds. More dice each floor. Survive the third boss to win.</li>
+      <li>Adds apply to each die, then multipliers. So Blue Ink on a split blue d4 gives +3.</li>
+    </ul>
+    <p class="note">The question this prototype answers: how often is the pick a real decision? After each roll, tap “Real choice” or “Obvious pick”. You’ll see the tally at the end.</p>
+    <div class="actions" style="justify-content:flex-start"><button class="btn" id="start">Start a run</button></div>
+  </section>`;
+}
+function renderReward() {
+  const full = S.consumables.length >= T.maxConsumables;
+  app.innerHTML = `<section class="sheet">
+    <div class="label">Floor ${S.floor} · before round ${S.round}</div>
+    <h2>Choose one</h2>
+    ${S.firstReward === false && S.stats.rounds === 2 ? '<p class="note">Your first pick always offers both kinds of “triple a d4”, so you can feel the difference.</p>' : ''}
+    <div class="cards">${S.offer.map((o, i) => {
+      const def = o[0] === 'up' ? UPGRADES[o[1]] : CONSUMABLES[o[1]];
+      const blocked = o[0] === 'use' && full;
+      return `<button class="card" data-offer="${i}" ${blocked ? 'disabled style="opacity:.5"' : ''}>
+        <span class="kind">${o[0] === 'up' ? 'Upgrade · lasts the run' : (blocked ? 'Pouch full' : 'One use')}</span>
+        <span class="name">${def.name}</span><span class="desc">${def.desc}</span></button>`;
+    }).join('')}</div>
+    <button class="btn ghost" id="skip">Skip</button>
+  </section>`;
+}
+function renderEnd() {
+  const s = S.stats; const rated = s.real + s.obvious;
+  app.innerHTML = `<section class="sheet">
+    <div class="label">${S.won ? 'Run complete' : 'Run over'}</div>
+    <h2>${S.won ? 'You walked out of the tavern alive.' : `Fell on floor ${S.floor}, round ${S.round}.`}</h2>
+    <div class="stats">
+      <div class="stat"><b>${rated ? `${s.real}/${rated}` : '—'}</b>rounds you marked a real choice</div>
+      <div class="stat"><b>${s.wins}/${s.rounds}</b>rounds won</div>
+      <div class="stat"><b>${s.dmg}</b>damage taken</div>
+      <div class="stat"><b>${s.best || 0}</b>highest roll</div>
+    </div>
+    <p>Build: ${S.upgrades.length ? S.upgrades.map(u => UPGRADES[u].name).join(', ') : 'no upgrades'}.</p>
+    <p class="note">Tell me the “real choice” number and anything that felt off. That decides whether the pick needs a twist before we design the real game.</p>
+    <div class="actions" style="justify-content:flex-start">
+      <button class="btn" id="again">New run</button>
+      ${S.won ? '<button class="btn ghost" id="endless">Keep going (endless)</button>' : ''}
+    </div>
+  </section>`;
+}
+
+// ---------- events ----------
+app.addEventListener('click', (e) => {
+  const t = e.target.closest('button'); if (!t || t.disabled) return;
+  if (t.id === 'start' || t.id === 'again') return newRun();
+  if (t.id === 'endless') { S.endless = true; S.floor++; S.round = 1; S.screen = 'table'; dealTable(); return render(); }
+  if (t.id === 'roll') return roll();
+  if (t.id === 'next') return next();
+  if (t.id === 'skip') { S.screen = 'table'; return render(); }
+  if (t.id === 'odds') { S.showOdds = !S.showOdds; return render(); }
+  if (t.dataset.die !== undefined) return choose(+t.dataset.die);
+  if (t.dataset.use) return useConsumable(t.dataset.use);
+  if (t.dataset.feel) { S.feel = S.feel === t.dataset.feel ? null : t.dataset.feel; return render(); }
+  if (t.dataset.offer !== undefined) return take(S.offer[+t.dataset.offer]);
+});
+
+S = { screen: 'start', showOdds: false };
+render();
+})();
+</script>
