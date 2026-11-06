@@ -116,6 +116,7 @@ const T = {
   rewardAfterRounds: [2, 4],                 // pick a reward after these rounds, and after each boss
   bossDamageMult: 2,
   sizes: [4, 6, 8, 10, 12, 20],
+  sizeSpread: [1, 2, 3, 5],                  // how many size steps apart dice can be, per floor (last value = later floors)
   colours: [['red', 3], ['blue', 3], ['green', 3], ['gold', 1]], // [colour, weight]
   maxConsumables: 3,
 };
@@ -168,10 +169,12 @@ function diceCount() { return Math.min(1 + S.floor, 5) + (isBoss() ? 1 : 0); }
 
 function dealTable() {
   const n = diceCount();
-  let dice;
-  do {
-    dice = Array.from({ length: n }, () => ({ size: T.sizes[Math.floor(Math.random() * T.sizes.length)], colour: pickWeighted(T.colours) }));
-  } while (new Set(dice.map(d => d.size)).size < Math.min(2, n));
+  // Size spread grows by floor: floor 1 = neighbouring sizes only (d6/d8), wider later.
+  const spread = T.sizeSpread[Math.min(S.floor, T.sizeSpread.length) - 1];
+  const maxStart = T.sizes.length - 1 - spread;
+  const start = Math.floor(Math.random() * (maxStart + 1));
+  const band = T.sizes.slice(start, start + spread + 1);
+  const dice = Array.from({ length: n }, () => ({ size: band[Math.floor(Math.random() * band.length)], colour: pickWeighted(T.colours) }));
   S.dice = dice; S.chosen = null; S.phase = 'pick'; S.results = null; S.verdict = null; S.feel = null; S.armed = null;
 }
 
@@ -279,7 +282,7 @@ function next() {
 }
 function makeOffer() {
   if (S.firstReward) { S.firstReward = false; return [['up', 'littlegiant'], ['up', 'tripler'], ['up', 'blueink']]; }
-  const pool = [...Object.keys(UPGRADES).map(k => ['up', k]), ...Object.keys(CONSUMABLES).map(k => ['use', k])];
+  const pool = [...Object.keys(UPGRADES).filter(k => !S.upgrades.includes(k)).map(k => ['up', k]), ...Object.keys(CONSUMABLES).map(k => ['use', k])];
   return shuffle(pool).slice(0, 3);
 }
 function take(o) {
