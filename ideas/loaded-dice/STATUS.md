@@ -1,6 +1,6 @@
 # STATUS — Loaded Dice (working title)
 
-- Stage: scouted — waiting on owner at Checkpoint 1 (Go / Pivot / Park)
+- Stage: scouted, GO — building the throwaway prototype (spike) before design
 - Verdict: Close cousins. Recommendation: Go with changes (spike first, tavern over casino, new name, no purchasable currency)
 - Kickoff Report: https://claude.ai/artifact/Q2TpWxqhNnj81QT4SMHtu8
 - Autonomy level: not set (plan stage)
