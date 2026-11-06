@@ -7,3 +7,4 @@
 - 2026-11-06, owner: dice come in random colours; upgrades can target colours (e.g. +1 to blue) as well as sizes
 - 2026-11-06, owner: early floors use similar-sized dice; size spread widens as you climb
 - 2026-11-06, owner: no duplicate upgrades (stacking on purpose is an open design question)
+- 2026-11-06, owner: classes are a later idea, not in the MVP

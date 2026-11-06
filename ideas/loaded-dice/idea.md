@@ -11,5 +11,5 @@ Owner answers (2026-11-06): unlocks carry over between runs; fixed floors with b
 - More than one decision per round: spend to reroll the table, peek a die before picking.
 - Meta unlocks: new colours, new dice (d100, coin), starting upgrades, difficulty tiers.
 - **Criticals (owner):** a die's top face = crit, a 1 = fumble, every size; opponents too. Enables crit-range / crit-power upgrades; small dice crit more often.
-- **Classes (owner):** pick a class at start (e.g. Paladin, Wizard, Rogue, Fighter), each with a starting kit, one signature rule, and its own skill pool unlocked by levelling up during a run. Launch with 2-3, add more later. Generic fantasy names only; nothing branded D&D.
-- Scope note: with classes the MVP is likely L (5-7 milestones).
+- **Classes (owner, LATER — not in MVP):** pick a class at start (e.g. Paladin, Wizard, Rogue, Fighter), each with a starting kit, one signature rule, and its own skill pool unlocked by levelling up during a run. Launch with 2-3, add more later. Generic fantasy names only; nothing branded D&D.
+- Scope note: classes are post-MVP (owner, 2026-11-06), so MVP stays around M-L.
