@@ -9,3 +9,6 @@ project named. Newest at the bottom.
 - 2026-11-06, loaded-dice: a cloud session couldn't reach the studio repo until the owner
   approved GitHub access for that session in chat. Ask for it at the start of a session, before
   writing files, so nothing sits only in the workspace.
+- 2026-11-08, daily-bread: first idea that isn't really a phone app (a scheduled cloud poster).
+  Social platforms gate automated posting (TikTok audit, Pinterest Standard access), so the
+  scout's "can the phone do it?" check needs a "which platform approvals are needed?" check too.
