@@ -1,8 +1,8 @@
 # Daily Bread (working title): status
 
-- **Stage:** 2 Scout done; waiting on Checkpoint 1 (Go / Pivot / Park)
+- **Stage:** 2 Scout done + pivot check; waiting on the owner to pick how to build it (inside Claude vs own desktop app)
 - **Verdict:** Close cousins
-- **Recommendation:** Go with changes (cloud service + weekly review page; already-approved posting service; images first, videos second; public-domain-first verified content)
+- **Recommendation:** Go (pivot): start as a skill inside Claude, grow into its own desktop app if wanted
 - **Autonomy level:** not set yet (settled at plan approval)
 - **Build route:** not set yet
 - **Done:** intake, scout (2026-11-08)

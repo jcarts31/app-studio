@@ -102,3 +102,24 @@ The gap is real but modest; what makes this worth building is that it's yours, c
 - [Pexels terms of service](https://pexels.com/terms-of-service)
 - [YouTube inauthentic content rules, Gulf News](https://gulfnews.com/technology/youtube-updates-monetisation-policies-ai-and-repetitive-content-ban-begins-july-15-1.500192660)
 - [Meta unoriginal content crackdown, Search Engine Journal](https://www.searchenginejournal.com/meta-follows-youtube-in-crackdown-on-unoriginal-content/551096/)
+
+## Pivot check (2026-11-08): your thoughts, shaped by Claude
+
+**New idea:** a personal app on the owner's computer, powered by Claude. The owner shares a verse, an influence, something learned, a prayer or a raw thought; Claude writes a polished post with images or music; the owner approves or tweaks; it learns from what's kept and changed, then publishes. Generic verses and quotes only some days.
+
+**Verdict: the gap gets much bigger.** Closest: Gloo Content Studio (sermons to posts, churches only, $65–100/mo, scheduling only on Pro); Voice to Post (voice notes to posts, generic, no publishing, little traction).
+
+**Two ways to build it:**
+1. **Inside Claude**: a Daily Bread skill in the Claude desktop app, a weekly review page, approved posts handed to the posting service. Uses the Claude plan, no extra AI bill. Effort S–M.
+2. **Own desktop app** calling the Claude API: dedicated journal screen; API key with billing (Sonnet ~$3/$15 per million tokens per a Sept 2026 third-party summary), est. $1–3/month. Effort M–L.
+
+| Area | | Why |
+|---|---|---|
+| Can the computer do it? | 🟢 | Approved posts queue at the posting service, so the PC needn't be on. |
+| Privacy | 🟢 | Prayers and thoughts stay local or in Claude chats; only approved posts leave. |
+| Images and music | 🟡 | Designed graphics over licensed photos; realistic AI images need AI labels; music baked in from a library licensed for every platform; in-app trending sounds can't be attached. |
+| Running costs | 🟢 | ~$16–24/month posting service + $0 (inside Claude) or ~$1–3 (own app). |
+
+**Recommendation: Go.** Start inside Claude, grow into its own desktop app if wanted.
+
+Pivot sources: [Gloo Content Studio](https://gloo.com/workspace/content-studio), [Voice to Post](https://www.producthunt.com/products/voice-to-post), [Claude API pricing summary](https://lucaberton.com/blog/claude-api-pricing-2026-fable-opus-sonnet-haiku/), [AI labeling, Billo](https://billo.app/blog/ai-labeling/), [Copyright-safe music, Uppbeat](https://uppbeat.io/blog/royalty-free-and-copyright-free-music/copyright-safe-music-for-shorts-reels-and-tiktok-how-to-post-without-claims-or-mutes)
