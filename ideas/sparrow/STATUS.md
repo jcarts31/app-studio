@@ -1,6 +1,6 @@
-# Daily Bread (working title): status
+# Sparrow (formerly Daily Bread): status
 
-- **Stage:** 3 Design, Gate 2 (name)
+- **Stage:** 3 Design, Gate 3 (key screens)
 - **Verdict:** Close cousins
 - **Recommendation:** Go (owner confirmed 2026-11-09): own desktop app
 - **Autonomy level:** not set yet (settled at plan approval)

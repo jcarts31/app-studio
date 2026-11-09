@@ -12,3 +12,4 @@
 - 2026-11-09, owner: add a reviewer agent that checks every post before it's queued and flags problems: poor timing given world events, quotes from controversial figures, anything political, plus (director) misattributed quotes, copyright, and the never-do list. Flags show in the weekly review with the reason; the owner decides. A last check runs near posting time, with a way to hold scheduled posts if something big happens.
 - 2026-11-09, director: open for planning: whether posting-time checks and scheduled posting need the PC on, or a tiny always-on piece.
 - 2026-11-09, owner: design direction A, Morning Pages (sage and mist, Literata + Figtree, calm journal-first).
+- 2026-11-09, owner: name is Sparrow (Matthew 10:29-31). Slug `sparrow`, app ID `com.jcarts.sparrow`. Folder renamed from ideas/daily-bread.

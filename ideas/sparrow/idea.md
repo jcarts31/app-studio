@@ -1,4 +1,4 @@
-# Daily Bread (working title)
+# Sparrow (formerly Daily Bread)
 
 **Pitched:** 2026-11-08. **Pivoted and confirmed:** 2026-11-09.
 
