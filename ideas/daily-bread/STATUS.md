@@ -1,14 +1,14 @@
 # Daily Bread (working title): status
 
-- **Stage:** 2 Scout done + pivot check; waiting on the owner to pick how to build it (inside Claude vs own desktop app)
+- **Stage:** 3 Design (starting)
 - **Verdict:** Close cousins
-- **Recommendation:** Go (pivot): start as a skill inside Claude, grow into its own desktop app if wanted
+- **Recommendation:** Go (owner confirmed 2026-11-09): own desktop app
 - **Autonomy level:** not set yet (settled at plan approval)
 - **Build route:** not set yet
-- **Done:** intake, scout (2026-11-08)
-- **Next:** owner's Go / Pivot / Park; on Go, optional one-evening posting spike, then design
+- **Done:** intake, scout, pivot check, Go (2026-11-09)
+- **Next:** design: name, look, key screens (journal, library, weekly review, inbox)
 - **Blockers:** none
 - **Artifacts:** [Kickoff Report](https://claude.ai/artifact/GrPiq9UuVa3KBBVMBrhoNE)
 - **Accounts connected:** GitHub (studio repo)
 - **Working now:** none
-- **Last updated:** 2026-11-08
+- **Last updated:** 2026-11-09

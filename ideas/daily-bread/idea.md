@@ -1,28 +1,27 @@
 # Daily Bread (working title)
 
-**Pitched:** 2026-11-08 by the owner.
+**Pitched:** 2026-11-08. **Pivoted and confirmed:** 2026-11-09.
 
 ## The idea
-A bot that posts one inspirational or meaningful Christian post a day across the owner's own
-social media accounts: Bible verses, quotes from prominent Christian thinkers, royalty-free
-video clips and similar.
+A personal desktop app on the owner's PC, powered by Claude, that is the home for the owner's
+faith life online: a Bible journal, a library of approved assets, and a posting studio that
+learns the owner's voice and what resonates with their audience.
 
-## Who it's for
-The owner's own accounts (a personal content ministry). Not a product for other people, at
-least to start.
+## What it does
+1. **Bible journal:** the owner writes reflections, verses that hit them, influences, lessons
+   and prayers. It tracks verses, themes and prayers over time.
+2. **Asset library:** images, music and video clips the owner approves, tagged and reused or
+   recycled by the bot when posting.
+3. **Claude drafts posts** from the owner's own thoughts (sometimes a verse or quote on its
+   own), in the owner's voice, with assets attached. The owner approves a week at a time.
+4. **Posts for the owner** to their own accounts on schedule.
+5. **One inbox and stats:** replies, comments and numbers from each platform in one place;
+   Claude drafts replies, the owner approves.
+6. **Learns:** from the journal, the owner's edits and approvals, what performs well and who
+   responds, to decide what to post and how.
 
-## The one thing it must do well
-Post reliably every day, with content that feels thoughtful rather than spammy.
+## Platforms
+Start: Facebook, Instagram, Threads, YouTube, X. Later: TikTok, Pinterest.
 
-## Intake answers (2026-11-08)
-- **Audience:** the owner's own accounts.
-- **Platforms:** all of them: TikTok & YouTube Shorts, X & Threads, Instagram & Facebook,
-  Pinterest & others.
-- **Approval:** the owner reviews and approves a week of posts at a time; then it runs on its own.
-
-## Early notes for scouting
-- This is mostly a scheduled background service, not a phone app. A phone app (or a web page)
-  may only be needed for the weekly review. That breaks from the default Expo-only stack.
-- Copyright: many modern Bible translations and 20th-century authors' quotes are still under
-  copyright; video clips need clear licences.
-- Each platform has its own posting rules, APIs, review processes and limits on automation.
+## Budget
+A few dollars a month (est. $2-4 on the direct posting route).
