@@ -1,0 +1,12 @@
+{
+  "name": "Sparrow",
+  "logo": "logo.svg",
+  "main_color": "#4F6F5F",
+  "placeholder": true,
+  "icon": { "background": "#F3F4F1", "foreground": "logo.svg", "padding_percent": 17 },
+  "adaptive": { "background_color": "#F3F4F1", "foreground": "logo.svg", "safe_zone_percent": 66 },
+  "adaptive_monochrome": { "color": "#FFFFFF", "leave_out": ["details"] },
+  "splash": { "background_color": "#F3F4F1", "background_color_dark": "#161C1A", "image": "logo.svg", "image_width": 160 },
+  "favicon": { "background": "#F3F4F1", "foreground": "logo.svg" },
+  "desktop": { "window_icon": "logo.svg", "notes": "Desktop icon sizes (Windows .ico) are settled at setup once the desktop stack is chosen." }
+}

@@ -13,3 +13,4 @@
 - 2026-11-09, director: open for planning: whether posting-time checks and scheduled posting need the PC on, or a tiny always-on piece.
 - 2026-11-09, owner: design direction A, Morning Pages (sage and mist, Literata + Figtree, calm journal-first).
 - 2026-11-09, owner: name is Sparrow (Matthew 10:29-31). Slug `sparrow`, app ID `com.jcarts.sparrow`. Folder renamed from ideas/daily-bread.
+- 2026-11-09, owner: design locked as v1 (Morning Pages, Sparrow, 5 key screens). Owner will use it before deciding changes; changes come back through design. Director: plan the build journal-first so the owner can use it early.
