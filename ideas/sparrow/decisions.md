@@ -14,3 +14,5 @@
 - 2026-11-09, owner: design direction A, Morning Pages (sage and mist, Literata + Figtree, calm journal-first).
 - 2026-11-09, owner: name is Sparrow (Matthew 10:29-31). Slug `sparrow`, app ID `com.jcarts.sparrow`. Folder renamed from ideas/daily-bread.
 - 2026-11-09, owner: design locked as v1 (Morning Pages, Sparrow, 5 key screens). Owner will use it before deciding changes; changes come back through design. Director: plan the build journal-first so the owner can use it early.
+- 2026-11-09, owner: Sparrow syncs across all the owner's devices, including the phone (Pixel 9 Pro). Same app on PC and Android; phone layouts need a design pass (comes back through app-design).
+- 2026-11-09, owner: use a small always-on cloud helper: syncs devices (journal, prayers and private entries end-to-end encrypted, so the helper can't read them), holds the approved week, runs the reviewer's last-minute news check, posts on time, collects replies, and takes "Hold all posts" from any device. Exact service and price to confirm at planning (always-stop: costs money, stores personal data).
