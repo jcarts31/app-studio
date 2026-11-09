@@ -20,6 +20,10 @@ learns the owner's voice and what resonates with their audience.
 6. **Learns:** from the journal, the owner's edits and approvals, what performs well and who
    responds, to decide what to post and how.
 
+7. **Reviewer:** a second agent checks every draft, and again near posting time, for poor
+   timing given world events, controversial sources, anything political, misattributed quotes
+   and copyright. It flags with a reason; the owner decides, and can hold scheduled posts.
+
 ## Platforms
 Start: Facebook, Instagram, Threads, YouTube, X. Later: TikTok, Pinterest.
 
