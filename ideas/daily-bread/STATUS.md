@@ -1,6 +1,6 @@
 # Daily Bread (working title): status
 
-- **Stage:** 3 Design, waiting on Gate 1 (direction)
+- **Stage:** 3 Design, Gate 2 (name)
 - **Verdict:** Close cousins
 - **Recommendation:** Go (owner confirmed 2026-11-09): own desktop app
 - **Autonomy level:** not set yet (settled at plan approval)

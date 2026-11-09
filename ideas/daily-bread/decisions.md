@@ -11,3 +11,4 @@
 - 2026-11-09, director: start with Facebook, Instagram, Threads, YouTube and X posted directly (cheap route, ~$2-4/month); TikTok and Pinterest later. Claude drafts replies; the owner approves (no auto-replies).
 - 2026-11-09, owner: add a reviewer agent that checks every post before it's queued and flags problems: poor timing given world events, quotes from controversial figures, anything political, plus (director) misattributed quotes, copyright, and the never-do list. Flags show in the weekly review with the reason; the owner decides. A last check runs near posting time, with a way to hold scheduled posts if something big happens.
 - 2026-11-09, director: open for planning: whether posting-time checks and scheduled posting need the PC on, or a tiny always-on piece.
+- 2026-11-09, owner: design direction A, Morning Pages (sage and mist, Literata + Figtree, calm journal-first).
