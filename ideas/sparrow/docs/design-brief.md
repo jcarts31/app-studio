@@ -113,7 +113,7 @@ approved posts in the queue (text, image, time, platforms) and post history; pla
   at setup and is the only way to restore on a new device if all devices are lost.
 - **Secrets:** no API key or token in the app. Claude key, Meta app secret and tokens live in
   helper secrets only.
-- **Platform rules:** official APIs only; Meta app in development mode with the owner as app
+- **Platform rules:** official APIs only; local phase posts to Facebook only; Meta app in development mode with the owner as app
   admin; respect publishing limits (Instagram 50 posts/24h); no automated replies.
 - **Copyright:** public-domain Bibles built in; other translations only with permission. Trusted
   voices under copyright: one or two sentences, credited with the work. Images only from the
@@ -132,11 +132,17 @@ None planned. Personal app.
 
 ## 9. Technical notes and open decisions
 
-- One Expo (latest SDK) + React Native + TypeScript + Expo Router codebase: Android app via EAS;
-  web build installed on Windows as an app (PWA: manifest, offline, own window), hosted on
-  Cloudflare Pages. Web needs COOP/COEP headers for expo-sqlite.
-- Helper: Cloudflare Worker (TypeScript, wrangler) in `helper/`, D1 database, R2 bucket, cron
-  triggers (free plan allows 5).
+- One Expo (latest SDK) + React Native + TypeScript + Expo Router codebase: Android app built
+  locally (wireless adb); web build installed on Windows as an app (PWA: manifest, offline, own
+  window), served by the home-base PC in the local phase, Cloudflare Pages at the cloud step.
+  Web needs COOP/COEP headers for expo-sqlite.
+- Helper: Cloudflare Worker code (TypeScript, wrangler) in `helper/`, D1, R2, scheduled jobs.
+  **Local phase:** it runs on the owner's main PC with wrangler's local mode (state persisted to
+  a folder on the PC, started at login, a small local timer triggering the scheduled job each
+  minute). Phone and second PC reach it over home Wi-Fi. **Cloud step:** the same code deploys to
+  Cloudflare (free plan allows 5 cron triggers). Write it so nothing depends on which.
+- Local phase limits: Facebook only (direct photo upload); Instagram and Threads need a public
+  image URL, so they wait for the cloud step. Posting and checks only while the PC is on.
 - Crypto: pure-JS audited libraries (`@noble/ciphers`, `@noble/hashes`) so Android and web
   share code. Key storage: expo-secure-store on Android; IndexedDB on web.
 - Claude model names live in `content/tuning.yaml` (`models.draft`, `models.review`).
@@ -145,6 +151,7 @@ None planned. Personal app.
 
 ## 10. Roadmap
 
-- **MVP:** M1–M7 in `docs/mvp-plan.md`.
+- **MVP (local phase):** M1–M7 in `docs/mvp-plan.md`.
+- **Cloud step:** helper to Cloudflare, Instagram and Threads, always-on posting, push, sync away from home.
 - **Later:** Inbox (drafted replies); Insights; X; YouTube Shorts, music and clips.
 - **Future:** TikTok; Pinterest; "Sparrow noticed" patterns; auto-suggested library finds.

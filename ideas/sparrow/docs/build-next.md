@@ -65,24 +65,24 @@ Parallel: tasks marked **∥** in the same milestone can run at the same time.
 ### M1.4 Installable PC app  [agent: app-engineer] [size: S] [status: todo]
 **Depends on:** M1.2
 **Goal:** install Sparrow from Edge as its own app on Windows.
-**Build:** web manifest (name, icons from assets/brand, theme colors), service worker for offline, Cloudflare Pages deploy with COOP/COEP headers; deploy script in `package.json`.
+**Build:** web manifest (name, icons from assets/brand, theme colors), service worker for offline; the web build is served by the home-base PC (via the helper, M1.5) with COOP/COEP headers; a script in `package.json` builds and publishes it locally. (Cloudflare Pages comes at the cloud step.)
 **Acceptance:** Edge offers "Install Sparrow"; it opens in its own window; works with Wi-Fi off after first load.
 **Tests:** manifest fields present.
 **Owner gate:** none.
 
-### M1.5 Helper skeleton  [agent: backend-engineer] [size: M] [status: todo] ∥
-**Depends on:** setup done (Cloudflare account)
-**Goal:** the always-on helper exists and only Sparrow can talk to it.
-**Build:** `helper/` Worker with D1 and R2 bindings, `/health`, device pairing (a setup code shown in the app pairs a device; device gets a token; tokens revocable), request auth middleware, a 5-minute cron stub. Secrets via `wrangler secret`.
-**Acceptance:** app shows "Helper connected" in a dev panel; requests without a token are refused; cron logs a heartbeat.
+### M1.5 Helper skeleton on the home-base PC  [agent: backend-engineer] [size: M] [status: todo] ∥
+**Depends on:** setup done
+**Goal:** the helper runs on the main PC and only Sparrow can talk to it, from the PC or the phone on home Wi-Fi.
+**Build:** `helper/` Worker with D1 and R2 bindings, `/health`, device pairing (a setup code shown in the app pairs a device; device gets a token; tokens revocable), request auth middleware, a scheduled job stub. Runs with wrangler's local mode, state persisted to a folder outside the repo (e.g. `%LOCALAPPDATA%\Sparrow\helper`), listening on the home network; secrets in a local `.dev.vars` (git-ignored); a small timer script triggers the scheduled job each minute; `helper:start` script plus a Windows login task so it runs in the background. Android: allow plain HTTP to local network addresses only (Expo config, not hand-edited), since payloads are encrypted. Code must deploy to Cloudflare later unchanged.
+**Acceptance:** the PC app and the Pixel (same Wi-Fi) show "Helper connected" in a dev panel; requests without a token are refused; the scheduled job logs a heartbeat every minute; helper restarts after a PC reboot.
 **Tests:** auth accepts valid tokens, rejects missing/revoked ones.
 **Owner gate:** none (account created at setup).
 
-### M1.6 Posting spike (Meta)  [agent: backend-engineer] [size: M] [status: todo]
-**Depends on:** M1.5; owner's Meta developer account and test Page/Instagram/Threads
-**Goal:** prove the helper can post an image with text to Facebook, Instagram and Threads.
-**Build:** throwaway route in `helper/spike/`: OAuth for a development-mode Meta app (owner as admin), long-lived tokens, upload a test image to R2 with a public URL, publish to the test Page, Instagram (container then publish) and Threads. Write findings to `docs/spikes/meta-posting.md` (steps, token lifetimes, limits, gotchas).
-**Acceptance:** one test post visible on each test account; findings written; tokens stored as helper secrets/encrypted in D1, never in the app.
+### M1.6 Posting spike (Facebook)  [agent: backend-engineer] [size: M] [status: todo]
+**Depends on:** M1.5; owner's Meta developer account and a test Facebook Page
+**Goal:** prove the helper on the PC can post an image with text to a Facebook Page.
+**Build:** throwaway route in `helper/spike/`: sign-in for a development-mode Meta app (owner as admin), long-lived Page token, direct photo upload to the test Page. Note in `docs/spikes/meta-posting.md` the steps, token lifetimes, limits, and what Instagram and Threads will need at the cloud step (public image URL).
+**Acceptance:** one test post visible on the test Page; findings written; tokens stored only in the helper (encrypted in D1 or `.dev.vars`), never in the app.
 **Tests:** none (spike); findings doc is the output.
 **Owner gate:** owner signs in on Meta's own screens; director reviews findings with the owner if anything failed.
 
@@ -137,9 +137,9 @@ Parallel: tasks marked **∥** in the same milestone can run at the same time.
 
 ### M3.2 Sync records in the helper  [agent: backend-engineer] [size: M] [status: todo] ∥
 **Depends on:** M1.5
-**Goal:** the helper stores encrypted records and hands back changes.
+**Goal:** the helper (on the home-base PC) stores encrypted records and hands back changes.
 **Build:** D1 tables for encrypted records (id, kind, updatedAt, deviceId, blob); push and pull-since-cursor endpoints; size limits.
-**Acceptance:** helper never sees plain text; pull returns only newer records; refuses oversized records.
+**Acceptance:** helper never sees plain text; pull returns only newer records; refuses oversized records; a nightly encrypted backup copy is written to a folder on the PC (keeps the last 30).
 **Tests:** push/pull cursor logic; auth.
 **Owner gate:** none.
 
@@ -147,7 +147,7 @@ Parallel: tasks marked **∥** in the same milestone can run at the same time.
 **Depends on:** M3.1, M3.2
 **Goal:** write on the PC, see it on the phone.
 **Build:** background sync (on open, on change, every few minutes while open); last edit wins per record, with the other version kept as "conflicting copy"; sync status line; add a new device with the recovery key.
-**Acceptance:** edits appear on another device within a minute while both are open; offline edits sync later; adding the second PC with the recovery key brings everything over.
+**Acceptance:** on home Wi-Fi, edits appear on another device within a minute while both are open; edits made away from home sync when back; the status line says plainly "Syncs when you're home"; adding the second PC with the recovery key brings everything over.
 **Tests:** merge and conflict cases.
 **Owner gate:** none.
 
@@ -157,7 +157,7 @@ Parallel: tasks marked **∥** in the same milestone can run at the same time.
 ### M4.1 Claude gateway with spending cap  [agent: backend-engineer] [size: M] [status: todo]
 **Depends on:** M1.5
 **Goal:** Sparrow can ask Claude for help, and can never overspend.
-**Build:** helper endpoint that calls the Claude API (key in secrets), models from tuning config, monthly cost counter in D1, cap from settings; when reached, return a plain "paused" response.
+**Build:** helper endpoint that calls the Claude API (key in the helper's local secrets on the PC), models from tuning config, monthly cost counter in D1, cap from settings; when reached, return a plain "paused" response.
 **Acceptance:** requests work; cost counted; cap reached returns paused and the app shows the voice.md message.
 **Tests:** cost accounting and cap.
 **Owner gate:** money OK (given); owner pastes the API key into the helper secret via a guided step.
@@ -216,9 +216,9 @@ Parallel: tasks marked **∥** in the same milestone can run at the same time.
 
 ## M6 This week and posting
 
-### M6.1 Connect your accounts  [agent: backend-engineer] [size: M] [status: todo]
+### M6.1 Connect your Facebook Page  [agent: backend-engineer] [size: M] [status: todo]
 **Depends on:** M1.6 findings
-**Goal:** connect your real Facebook Page, Instagram and Threads from Sparrow.
+**Goal:** connect your real Facebook Page from Sparrow. (Instagram and Threads at the cloud step; show them as "Coming with the cloud step".)
 **Build:** production version of the spike: connect flow opened from the app, tokens in the helper (encrypted), refresh before expiry, a warning when a sign-in needs renewing; disconnect.
 **Acceptance:** connect and disconnect each platform; app shows connected status; expiring token produces a warning.
 **Tests:** token refresh scheduling.
@@ -234,13 +234,13 @@ Parallel: tasks marked **∥** in the same milestone can run at the same time.
 
 ### M6.3 Scheduler, news check and posting  [agent: backend-engineer] [size: L] [status: todo]
 **Depends on:** M6.1, M6.2
-**Goal:** approved posts go out on time, after a last-minute check.
-**Build:** cron: about an hour before each post, reviewer news check (Claude with web search, max 3 searches); flagged → post held and phone notified; at time → publish to each platform; retries with backoff; post history with links; "Hold all posts" and per-post hold from any device.
-**Acceptance:** a test post goes out on time on all three; a forced flag holds the post and sends a notification; Hold all stops everything until released; history shows links.
+**Goal:** approved posts go out on time while the PC is on, after a last-minute check.
+**Build:** scheduled job: about an hour before each post, reviewer news check (Claude with web search, max 3 searches); flagged → post held and shown in This week; at time → publish to Facebook; if the PC was off at post time, the post waits and the app asks "Post now, or reschedule?" (never posts late silently); retries with backoff; post history with links; "Hold all posts" and per-post hold from any device.
+**Acceptance:** a test post goes out on time; a forced flag holds it; a missed post (PC off) asks before posting; Hold all stops everything until released; history shows links.
 **Tests:** scheduling, hold logic, retry rules.
 **Owner gate:** first real post (owner watches it).
 
-### M6.4 Phone notifications  [agent: app-engineer] [size: S] [status: todo] ∥
+### M6.4 Phone notifications  [agent: app-engineer] [size: S] [status: moved to cloud step (C3)]
 **Depends on:** M1.5
 **Goal:** your phone tells you when a post is held or something needs you.
 **Build:** expo-notifications push token registered with the helper; notification wording from strings.yaml; tapping opens This week.
@@ -252,6 +252,7 @@ Parallel: tasks marked **∥** in the same milestone can run at the same time.
 *Before M7: asset pass (logo, chime).*
 
 ### M7.1 Welcome and setup flow  [agent: ui-builder] [size: M] [status: todo]
+*Local phase: step 4 connects Facebook only.*
 **Depends on:** M3.3, M4.4, M6.1
 **Goal:** first launch walks you through setup, per the Welcome mockup.
 **Acceptance:** fresh install → first entry in under two minutes; steps 2–4 resumable later.
@@ -268,3 +269,23 @@ Parallel: tasks marked **∥** in the same milestone can run at the same time.
 ### M7.4 Accessibility pass  [agent: qa-tester] [size: S] [status: todo]
 **Acceptance:** screen reader labels, keyboard use on PC, large font scale, contrast; issues filed as tasks.
 **Owner gate:** none.
+
+## The cloud step (only when the owner says so; cost confirmed first)
+
+### C1 Move the helper to Cloudflare  [agent: backend-engineer] [size: M] [status: later]
+**Goal:** the helper runs always-on in the cloud with the same code and data.
+**Build:** Cloudflare account (owner creates), deploy Worker, D1, R2; migrate data from the PC; cron triggers; Cloudflare Pages for the web app; devices re-point to the cloud address.
+**Owner gate:** money OK (free plan or $5), account creation.
+
+### C2 Instagram and Threads posting  [agent: backend-engineer] [size: M] [status: later]
+**Goal:** post to Instagram and Threads too.
+**Build:** public image URLs from R2; Instagram (container then publish) and Threads publishing; token refresh.
+**Owner gate:** connecting accounts.
+
+### C3 Phone notifications and sync away from home  [agent: app-engineer] [size: S] [status: later]
+**Goal:** your phone tells you when a post is held, and syncs anywhere.
+**Build:** expo-notifications push via the helper; sync works on any network.
+
+### C4 Cloud build route  [agent: app-engineer] [size: S] [status: later]
+**Goal:** phone builds via EAS and an install link, no PC needed.
+**Owner gate:** Expo account.

@@ -25,3 +25,7 @@
 - 2026-11-10, owner: plan approved (Checkpoint 3): 7 milestones, 28 tasks.
 - 2026-11-10, owner: autonomy: check in after each milestone.
 - 2026-11-10, owner: build route: local for now (Claude Code on the PC, wireless adb to the Pixel); add the cloud route once the owner is happy and has tested everything.
+- 2026-11-10, owner: local first. Everything runs locally until the owner is happy, before paying for any cloud service. The helper is built now but runs on the owner's main PC ("home base"); moving it to Cloudflare later is the "cloud step", needing no rebuild.
+- 2026-11-10, owner: Claude API is used during the local phase, with a hard cap (~$1-3/month). The key lives only in the helper on the PC.
+- 2026-11-10, owner: phone and second PC sync with the main PC over home Wi-Fi (encrypted, same sync code as the cloud version later).
+- 2026-11-10, director: local phase posts to Facebook only (direct photo upload works from a home PC). Instagram and Threads need images at a public web address, so they move to the cloud step, along with always-on posting, phone push notifications and sync away from home.
