@@ -10,8 +10,10 @@ learns the owner's voice and what resonates with their audience.
 ## What it does
 1. **Bible journal:** the owner writes reflections, verses that hit them, influences, lessons
    and prayers. It tracks verses, themes and prayers over time.
-2. **Asset library:** images, music and video clips the owner approves, tagged and reused or
-   recycled by the bot when posting.
+2. **Library (the bot's pantry):** images, music, clips, verses and quotes the owner approves,
+   built up together with Claude, tagged and reused or recycled by the bot when posting. It also
+   holds the owner's **trusted voices** (e.g. C.S. Lewis), each with a bank of verified quotes;
+   the bot quotes only from those.
 3. **Claude drafts posts** from the owner's own thoughts (sometimes a verse or quote on its
    own), in the owner's voice, with assets attached. The owner approves a week at a time.
 4. **Posts for the owner** to their own accounts on schedule.

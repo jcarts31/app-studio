@@ -45,5 +45,5 @@ Inbox (new count), Insights; at the bottom, the next scheduled post and **Hold a
 - **Interactions:** nothing is sent without a tap.
 
 ## Not yet mocked up (come back through design before building)
-Voice setup (step 2), account connections and settings, the post editor in full, the Insights
+Library: trusted voices list and each voice's verified-quote bank (with source and copyright note); Voice setup (step 2), account connections and settings, the post editor in full, the Insights
 page in full, the reviewer's news-check detail.
