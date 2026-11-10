@@ -1,10 +1,10 @@
 # Sparrow (formerly Daily Bread): status
 
-- **Stage:** 4 Plan, waiting on plan approval (Checkpoint 3)
+- **Stage:** 5 Setup (next). Plan approved 2026-11-10.
 - **Verdict:** Close cousins
 - **Recommendation:** Go (owner confirmed 2026-11-09): own desktop app
-- **Autonomy level:** not set yet (settled at plan approval)
-- **Build route:** not set yet
+- **Autonomy level:** check in after each milestone
+- **Build route:** local (Claude Code on the PC, wireless adb); cloud route later
 - **Done:** intake, scout, pivot, Go, design (direction, name, screens, locked v1)
 - **Next:** owner approves the plan; then autonomy level, build route (cloud), accounts; then app-setup.
 - **Blockers:** none
