@@ -12,3 +12,12 @@ project named. Newest at the bottom.
 - 2026-11-08, daily-bread: first idea that isn't really a phone app (a scheduled cloud poster).
   Social platforms gate automated posting (TikTok audit, Pinterest Standard access), so the
   scout's "can the phone do it?" check needs a "which platform approvals are needed?" check too.
+- 2026-11-11, sparrow: in the cloud sandbox `npx expo install` fails ("HTTP Proxy Network Error:
+  Forbidden") because Expo's API is blocked; `EXPO_OFFLINE=1 npx expo install` works (uses the
+  SDK's bundled versions). `expo lint` can't auto-configure either: install eslint +
+  eslint-config-expo the same way and add eslint.config.js (now in templates/expo-app).
+- 2026-11-11, sparrow: expo-router `Link asChild` around a Pressable with a style function lost
+  its styles on web; use Pressable + `router.navigate()` for nav items (template AppShell does).
+- 2026-11-11, sparrow: this session couldn't create GitHub repos (gh token invalid); asking the
+  owner to make an empty private repo at github.com/new, then attaching it, took one minute.
+- 2026-11-11, studio: first templates/expo-app created from Sparrow.

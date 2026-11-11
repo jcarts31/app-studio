@@ -6,4 +6,4 @@ One line per app or idea. Updated whenever an app's stage changes.
 |---|---|---|---|---|---|
 | Spellfound | spellfound | Build: hand signs next (`build-next.md` task 3) | 2026-11-02 | [jcarts31/spellfound](https://github.com/jcarts31/spellfound) | Autonomy level and build route; hand checks on the Pixel; final wording for the other-ways switch, writing page and mirror prompts |
 | Loaded Dice (working title) | loaded-dice | Go: prototype passed, design next ([Kickoff Report](https://claude.ai/artifact/Q2TpWxqhNnj81QT4SMHtu8)) | 2026-11-06 | ideas/loaded-dice | Start design ("continue Loaded Dice") |
-| Sparrow (was Daily Bread) | sparrow | Plan approved; next: setup (local route) | 2026-11-10 | ideas/sparrow | Accounts for setup |
+| Sparrow (was Daily Bread) | sparrow | Setup: project created; next: first run on the PC | 2026-11-11 | https://github.com/jcarts31/sparrow | Run Claude Code on the main PC to clone and build |
