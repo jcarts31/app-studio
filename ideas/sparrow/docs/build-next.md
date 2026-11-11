@@ -30,7 +30,7 @@ Parallel: tasks marked **∥** in the same milestone can run at the same time.
 
 ---
 
-## M1 Walking skeleton + posting test
+## M1 Walking skeleton
 
 ### M1.1 Theme and core components  [agent: ui-builder] [size: M] [status: todo] ∥
 **Depends on:** setup done
@@ -77,14 +77,6 @@ Parallel: tasks marked **∥** in the same milestone can run at the same time.
 **Acceptance:** the PC app and the Pixel (same Wi-Fi) show "Helper connected" in a dev panel; requests without a token are refused; the scheduled job logs a heartbeat every minute; helper restarts after a PC reboot.
 **Tests:** auth accepts valid tokens, rejects missing/revoked ones.
 **Owner gate:** none (account created at setup).
-
-### M1.6 Posting spike (Facebook)  [agent: backend-engineer] [size: M] [status: todo]
-**Depends on:** M1.5; owner's Meta developer account and a test Facebook Page
-**Goal:** prove the helper on the PC can post an image with text to a Facebook Page.
-**Build:** throwaway route in `helper/spike/`: sign-in for a development-mode Meta app (owner as admin), long-lived Page token, direct photo upload to the test Page. Note in `docs/spikes/meta-posting.md` the steps, token lifetimes, limits, and what Instagram and Threads will need at the cloud step (public image URL).
-**Acceptance:** one test post visible on the test Page; findings written; tokens stored only in the helper (encrypted in D1 or `.dev.vars`), never in the app.
-**Tests:** none (spike); findings doc is the output.
-**Owner gate:** owner signs in on Meta's own screens; director reviews findings with the owner if anything failed.
 
 ## M2 A journal you can use
 *Before M2: phone layouts design pass (app-design) and owner OK.*
@@ -214,15 +206,7 @@ Parallel: tasks marked **∥** in the same milestone can run at the same time.
 **Tests:** the test set as fixtures.
 **Owner gate:** none.
 
-## M6 This week and posting
-
-### M6.1 Connect your Facebook Page  [agent: backend-engineer] [size: M] [status: todo]
-**Depends on:** M1.6 findings
-**Goal:** connect your real Facebook Page from Sparrow. (Instagram and Threads at the cloud step; show them as "Coming with the cloud step".)
-**Build:** production version of the spike: connect flow opened from the app, tokens in the helper (encrypted), refresh before expiry, a warning when a sign-in needs renewing; disconnect.
-**Acceptance:** connect and disconnect each platform; app shows connected status; expiring token produces a warning.
-**Tests:** token refresh scheduling.
-**Owner gate:** owner signs in (connecting real accounts).
+## M6 This week (approve and get posts ready)
 
 ### M6.2 This week  [agent: app-engineer] [size: L] [status: todo]
 **Depends on:** M5.2, M5.3
@@ -232,14 +216,6 @@ Parallel: tasks marked **∥** in the same milestone can run at the same time.
 **Tests:** plan generation rules; approval state machine.
 **Owner gate:** none.
 
-### M6.3 Scheduler, news check and posting  [agent: backend-engineer] [size: L] [status: todo]
-**Depends on:** M6.1, M6.2
-**Goal:** approved posts go out on time while the PC is on, after a last-minute check.
-**Build:** scheduled job: about an hour before each post, reviewer news check (Claude with web search, max 3 searches); flagged → post held and shown in This week; at time → publish to Facebook; if the PC was off at post time, the post waits and the app asks "Post now, or reschedule?" (never posts late silently); retries with backoff; post history with links; "Hold all posts" and per-post hold from any device.
-**Acceptance:** a test post goes out on time; a forced flag holds it; a missed post (PC off) asks before posting; Hold all stops everything until released; history shows links.
-**Tests:** scheduling, hold logic, retry rules.
-**Owner gate:** first real post (owner watches it).
-
 ### M6.4 Phone notifications  [agent: app-engineer] [size: S] [status: moved to cloud step (C3)]
 **Depends on:** M1.5
 **Goal:** your phone tells you when a post is held or something needs you.
@@ -248,12 +224,20 @@ Parallel: tasks marked **∥** in the same milestone can run at the same time.
 **Tests:** registration flow.
 **Owner gate:** none (standard notification permission, asked in context).
 
+### M6.5 Ready shelf: copy and save  [agent: app-engineer] [size: S] [status: todo]
+**Depends on:** M6.2
+**Goal:** before socials are connected, approved posts wait on a Ready shelf where you can copy the text and save the image to post by hand.
+**Build:** "Copy text" and "Save image" on each approved post; marked "posted by hand" when you say so.
+**Acceptance:** copied text and saved image match the preview exactly, on PC and phone.
+**Tests:** status changes.
+**Owner gate:** design OK needed (small addition to This week).
+
 ## M7 Welcome, polish and hardening
 *Before M7: asset pass (logo, chime).*
 
 ### M7.1 Welcome and setup flow  [agent: ui-builder] [size: M] [status: todo]
-*Local phase: step 4 connects Facebook only.*
-**Depends on:** M3.3, M4.4, M6.1
+*Step 4 (connect accounts) shows "Later" until M8.*
+**Depends on:** M3.3, M4.4
 **Goal:** first launch walks you through setup, per the Welcome mockup.
 **Acceptance:** fresh install → first entry in under two minutes; steps 2–4 resumable later.
 **Owner gate:** none (mocked up).
@@ -269,6 +253,33 @@ Parallel: tasks marked **∥** in the same milestone can run at the same time.
 ### M7.4 Accessibility pass  [agent: qa-tester] [size: S] [status: todo]
 **Acceptance:** screen reader labels, keyboard use on PC, large font scale, contrast; issues filed as tasks.
 **Owner gate:** none.
+
+## M8 Connect your socials and post  (when the owner is happy with the direction)
+*Owner sets up a Meta developer account and Facebook Page first. The spike runs before anything else in M8; if it fails, stop and bring options.*
+
+### M8.1 Posting spike (Facebook)  [agent: backend-engineer] [size: M] [status: todo]
+**Depends on:** M1.5; owner ready to set up socials; owner's Meta developer account and a test Facebook Page
+**Goal:** prove the helper on the PC can post an image with text to a Facebook Page.
+**Build:** throwaway route in `helper/spike/`: sign-in for a development-mode Meta app (owner as admin), long-lived Page token, direct photo upload to the test Page. Note in `docs/spikes/meta-posting.md` the steps, token lifetimes, limits, and what Instagram and Threads will need at the cloud step (public image URL).
+**Acceptance:** one test post visible on the test Page; findings written; tokens stored only in the helper (encrypted in D1 or `.dev.vars`), never in the app.
+**Tests:** none (spike); findings doc is the output.
+**Owner gate:** owner signs in on Meta's own screens; director reviews findings with the owner if anything failed.
+
+### M8.2 Connect your Facebook Page  [agent: backend-engineer] [size: M] [status: todo]
+**Depends on:** M8.1 findings
+**Goal:** connect your real Facebook Page from Sparrow. (Instagram and Threads at the cloud step; show them as "Coming with the cloud step".)
+**Build:** production version of the spike: connect flow opened from the app, tokens in the helper (encrypted), refresh before expiry, a warning when a sign-in needs renewing; disconnect.
+**Acceptance:** connect and disconnect each platform; app shows connected status; expiring token produces a warning.
+**Tests:** token refresh scheduling.
+**Owner gate:** owner signs in (connecting real accounts).
+
+### M8.3 Scheduler, news check and posting  [agent: backend-engineer] [size: L] [status: todo]
+**Depends on:** M8.2, M6.2
+**Goal:** approved posts go out on time while the PC is on, after a last-minute check.
+**Build:** scheduled job: about an hour before each post, reviewer news check (Claude with web search, max 3 searches); flagged → post held and shown in This week; at time → publish to Facebook; if the PC was off at post time, the post waits and the app asks "Post now, or reschedule?" (never posts late silently); retries with backoff; post history with links; "Hold all posts" and per-post hold from any device.
+**Acceptance:** a test post goes out on time; a forced flag holds it; a missed post (PC off) asks before posting; Hold all stops everything until released; history shows links.
+**Tests:** scheduling, hold logic, retry rules.
+**Owner gate:** first real post (owner watches it).
 
 ## The cloud step (only when the owner says so; cost confirmed first)
 

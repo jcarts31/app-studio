@@ -29,3 +29,4 @@
 - 2026-11-10, owner: Claude API is used during the local phase, with a hard cap (~$1-3/month). The key lives only in the helper on the PC.
 - 2026-11-10, owner: phone and second PC sync with the main PC over home Wi-Fi (encrypted, same sync code as the cloud version later).
 - 2026-11-10, director: local phase posts to Facebook only (direct photo upload works from a home PC). Instagram and Threads need images at a public web address, so they move to the cloud step, along with always-on posting, phone push notifications and sync away from home.
+- 2026-11-11, owner: socials and connections move to the end. Order: app up and running, journal, sync, voice and library, drafts and reviewer, This week (posts wait on a Ready shelf to copy/save by hand), polish, real use; then M8 connect socials and post (Meta developer account set up then); then the cloud step. Sample posts now so the owner can give feedback on direction.
