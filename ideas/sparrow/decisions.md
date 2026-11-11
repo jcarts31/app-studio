@@ -33,3 +33,4 @@
 - 2026-11-11, owner: each kind of post gets its own look (verses, quotes, the owner's own words). Favorites from the samples: 1 (sage verse card) and 3 (verse over a photo). Library images and art become post backgrounds once the library exists.
 - 2026-11-11, owner: quotes use both looks (framed when no fitting image, full darkened photo when there is). Prayers get their own look (two options on the canvas, owner to pick).
 - 2026-11-11, director (default, owner didn't answer): the owner's own words use both looks too (journal page without a photo, photo and note with one). Owner can change this.
+- 2026-11-11, owner: prayer look option A (quiet page). Post looks recorded as v1 in docs/design/post-looks.md; owner expects to revisit colors, image and music types once their brand identity settles (a brand pass with the asset pass).

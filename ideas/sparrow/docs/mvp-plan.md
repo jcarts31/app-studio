@@ -31,7 +31,7 @@ auto-suggested finds (Future).
 
 | # | Name | Goal (owner's words) | What you can try after this | Size |
 |---|---|---|---|---|
-| — | *Sample posts* | *Owner reacts to how posts look and sound (now, before building).* | *Mockups of sample posts.* | — |
+| ✓ | *Sample posts* | *Done 2026-11-11: post looks v1 (docs/design/post-looks.md).* | — | — |
 | M1 | Walking skeleton | "Sparrow opens on my phone and PC." | Open Sparrow on the Pixel and in its own window on your PC, click through the five sections in the Morning Pages look; the helper runs on your PC. | M |
 | — | *Phone layouts design pass* | *Owner OKs phone versions of the screens (app-design).* | *Mockups to react to.* | — |
 | M2 | A journal you can use | "I can journal in Sparrow every day." | Write entries with verses filled in, tags and prayers; mark a prayer answered; search; save a backup file. | M |
@@ -39,7 +39,7 @@ auto-suggested finds (Future).
 | M4 | Library and your voice | "Sparrow knows my sources and how I write." | Add images; add trusted voices and verified quotes (together); teach Sparrow your voice. | M |
 | M5 | Drafts and the reviewer | "Sparrow drafts posts that sound like me, and catches problems." | Switch an entry to "Okay to share", get a draft with a verse card, previewed as it would look; see the reviewer flag a test case. | M |
 | M6 | This week | "I approve the week and posts are ready." | Approve a week; approved posts wait on a Ready shelf where you can copy the text and save the image. | M |
-| — | *Asset pass* | *Real logo and sounds (app-design).* | *Pick the logo and chime.* | — |
+| — | *Asset and brand pass* | *Real logo and sounds; revisit post colors, image and music types once your brand identity settles (app-design).* | *Pick the logo, chime and post looks.* | — |
 | M7 | Welcome, polish and hardening | "It feels finished." | First-launch setup, sounds, dark mode, friendly empty and error states. | M |
 | — | *Real use* | *Owner lives with it until happy with the direction; feedback becomes tasks (app-qa).* | — | — |
 | M8 | Connect your socials and post | "It posts for me." | Connect your Facebook Page; posts go out while your PC is on, after a news check; hold one; see history. | L |
