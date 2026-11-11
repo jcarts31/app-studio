@@ -184,7 +184,7 @@ Parallel: tasks marked **∥** in the same milestone can run at the same time.
 ### M5.1 Verse card images  [agent: ui-builder] [size: M] [status: todo] ∥
 **Depends on:** M4.2
 **Goal:** posts get a clean card: verse or quote over sage or one of your images.
-**Build:** card templates from `content/cards.yaml` (square 1080×1080 and portrait 1080×1350), rendered in the app to JPEG and uploaded to R2.
+**Build:** card templates from `content/cards.yaml` (square 1080×1080 and portrait 1080×1350), one family of looks per kind of post (verse: plain sage card or over a library photo; quote and the owner's own words: the looks the owner picks on the sample-posts canvas, https://claude.ai/artifact/FntS4RXFMYuCfiqwsBG7dG), backgrounds drawn from approved library images and art; rendered in the app to JPEG and stored by the helper.
 **Acceptance:** cards match the Morning Pages look; long verses fit or warn; text stays readable over photos.
 **Tests:** layout fitting rules.
 **Owner gate:** none (templates follow the design system); owner reacts during playtest.
